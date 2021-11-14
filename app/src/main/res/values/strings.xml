@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Cool app</string>
+    <string name="email">EMAIL</string>
+    <string name="password">PASSWORD</string>
+    <string name="login">LOGIN</string>
+    <string name="forgot_password">forgot password ?</string>
+</resources>
