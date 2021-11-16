@@ -204,3 +204,17 @@ internal infix fun Double.roundDouble(point: Int): Double {
         else -> 0.0
     }
 }
+
+fun parseSavedCurrencies(currencies: String):MutableList<String> {
+    var string = currencies.replace("\n", "#")
+    val listOfCurrencies: MutableList<String> = mutableListOf()
+    while (true) {
+        val index = string.indexOf("#")
+        val size = string.length
+        if (index != -1) {
+            listOfCurrencies.add(string.substring(0,index))
+            string = string.substring(index+1,size)
+        } else break
+    }
+    return listOfCurrencies
+}
