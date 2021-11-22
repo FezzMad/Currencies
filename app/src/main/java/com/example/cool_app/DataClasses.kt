@@ -47,3 +47,9 @@ internal data class IncreasedCurrencies(
     var name: String? = null,
     var percentageIncrease: Double? = null //  процент повышения цены
 )
+
+internal data class Result(
+    val date: String?,
+    val result: String,
+    val list: MutableList<String>,
+    val incCurrencies: String)

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragmentLoginPage">
+
+    <fragment
+        android:id="@+id/fragmentLoginPage"
+        android:name="com.example.cool_app.FragmentLoginPage"
+        android:label="fragment_login_page"
+        tools:layout="@layout/fragment_login_page" >
+        <action
+            android:id="@+id/action_fragmentLoginPage_to_fragmentIncreasedExchangeRate"
+            app:destination="@id/fragmentIncreasedExchangeRate"
+            app:popUpTo="@id/fragmentLoginPage"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentIncreasedExchangeRate"
+        android:name="com.example.cool_app.increased_exchanged_rate.FragmentIncreasedExchangeRate"
+        android:label="fragment_increased_exchange_rate"
+        tools:layout="@layout/fragment_increased_exchange_rate" >
+        <action
+            android:id="@+id/action_fragmentIncreasedExchangeRate_to_fragmentExchangeRate"
+            app:destination="@id/fragmentExchangeRate"
+            app:popUpTo="@id/fragmentIncreasedExchangeRate" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentExchangeRate"
+        android:name="com.example.cool_app.FragmentExchangeRate"
+        android:label="fragment_exchange_rate"
+        tools:layout="@layout/fragment_exchange_rate" />
+</navigation>

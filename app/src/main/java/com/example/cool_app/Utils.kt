@@ -3,6 +3,7 @@ package com.example.cool_app
 import android.content.Context
 import android.net.ConnectivityManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
 import java.net.URL
@@ -58,6 +59,7 @@ internal suspend fun getDateLastMonth(exchangeRate: CBAPI): DateAPI =
  *                              API FUNCTIONS                                 *
  ******************************************************************************/
 
+/** нужно обернуть класс CenterBankAPI */
 // Парсинг xml-файла
 // (пока просто работает, нужно доработать)
 internal suspend fun parseCBPAPI(xmlString: String): CBAPI {
@@ -183,6 +185,66 @@ internal suspend fun getCenterBankExchangeRate(
     exchangeRate
 }
 
+internal suspend fun buildResult(
+    increasedCurrenciesProperties: IncreasedCurrenciesProperties,
+    dateAPI: DateAPI,
+    exchangeRateToDay: CBAPI
+): Result = withContext(Dispatchers.Default) {
+    val dateSaved: String?
+    val result: String?
+    var incCurrencies: String?
+    val list: MutableList<String> = mutableListOf()
+    return@withContext if (increasedCurrenciesProperties.increasedCurrenciesList.isNotEmpty()) {
+        val maxValue =
+            increasedCurrenciesProperties.increasedCurrenciesList[increasedCurrenciesProperties.indexMax]
+        val minValue =
+            increasedCurrenciesProperties.increasedCurrenciesList[increasedCurrenciesProperties.indexMin]
+        dateSaved = exchangeRateToDay.valCurs?.date
+        result =
+            "Average percent +${increasedCurrenciesProperties.averagePercent}\n" +
+                    "${maxValue.name} +${maxValue.percentageIncrease} (${maxValue.charCode})\n" +
+                    "${minValue.name} +${minValue.percentageIncrease} (${minValue.charCode})"
+        incCurrencies = ""
+        increasedCurrenciesProperties.increasedCurrenciesList.forEach {
+            incCurrencies += "${it.name} +${it.percentageIncrease} (${it.charCode})\n"
+            list.add("${it.name} +${it.percentageIncrease} (${it.charCode})")
+        }
+        Result(dateSaved, result, list, incCurrencies)
+    } else {
+        dateSaved =
+            "${dateAPI.day}.${dateAPI.month}.${dateAPI.year}"
+        result = "Нет валют, которые бы повысились в цене"
+        incCurrencies = ""
+        Result(dateSaved, result, list, incCurrencies)
+    }
+}
+
+internal suspend fun getInfo(): Result = withContext(Dispatchers.IO) {
+    val exchangeRateToDay = async { getCenterBankExchangeRate() }
+    val dateAPI = async { getDateLastMonth(exchangeRateToDay.await()) }
+    val exchangeRateLastMonth = async {
+        getCenterBankExchangeRate(
+            dateAPI.await().day,
+            dateAPI.await().month,
+            dateAPI.await().year
+        )
+    }
+    val increasedCurrenciesProperties = async {
+        getIncreasedCurrencies(
+            exchangeRateToDay.await(),
+            exchangeRateLastMonth.await()
+        )
+    }
+    val resultObj = async {
+        buildResult(
+            increasedCurrenciesProperties.await(),
+            dateAPI.await(),
+            exchangeRateToDay.await()
+        )
+    }
+    return@withContext resultObj.await()
+}
+
 
 /******************************************************************************
  *                              OTHERS FUNCTIONS                              *
@@ -205,15 +267,15 @@ internal infix fun Double.roundDouble(point: Int): Double {
     }
 }
 
-fun parseSavedCurrencies(currencies: String):MutableList<String> {
+fun parseSavedCurrencies(currencies: String): MutableList<String> {
     var string = currencies.replace("\n", "#")
     val listOfCurrencies: MutableList<String> = mutableListOf()
     while (true) {
         val index = string.indexOf("#")
         val size = string.length
         if (index != -1) {
-            listOfCurrencies.add(string.substring(0,index))
-            string = string.substring(index+1,size)
+            listOfCurrencies.add(string.substring(0, index))
+            string = string.substring(index + 1, size)
         } else break
     }
     return listOfCurrencies

@@ -4,6 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_exchange_rate.xml" value="0.264" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_increased_exchange_rate.xml" value="0.264" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_login.xml" value="0.223731884057971" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_login_page.xml" value="0.223731884057971" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/list_item.xml" value="0.4" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/login_page.xml" value="0.264" />
       </map>
