@@ -24,11 +24,22 @@
         <action
             android:id="@+id/action_fragmentIncreasedExchangeRate_to_fragmentExchangeRate"
             app:destination="@id/fragmentExchangeRate"
-            app:popUpTo="@id/fragmentIncreasedExchangeRate" />
+            app:popUpTo="@id/fragmentIncreasedExchangeRate"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_fragmentIncreasedExchangeRate_to_fragmentSettings"
+            app:destination="@id/fragmentSettings"
+            app:popUpTo="@id/fragmentExchangeRate"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/fragmentExchangeRate"
-        android:name="com.example.cool_app.FragmentExchangeRate"
+        android:name="com.example.cool_app.exchange_rate.FragmentExchangeRate"
         android:label="fragment_exchange_rate"
         tools:layout="@layout/fragment_exchange_rate" />
+    <fragment
+        android:id="@+id/fragmentSettings"
+        android:name="com.example.cool_app.FragmentSettings"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

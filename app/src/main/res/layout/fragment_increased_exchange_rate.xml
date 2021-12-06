@@ -37,10 +37,11 @@
             android:layout_marginEnd="8dp"
             android:fillViewport="true"
             android:scrollbars="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/buttonExchangeRate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/resultView"
+            app:layout_constraintVertical_bias="0.0"
             tools:ignore="MissingConstraints">
 
             <ListView
@@ -53,10 +54,22 @@
             android:id="@+id/buttonExchangeRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="all"
+            android:layout_marginBottom="4dp"
+            android:text="Exchange rate"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/buttonSettings" />
+
+        <Button
+            android:id="@+id/buttonSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            app:layout_constraintEnd_toStartOf="@+id/buttonExchangeRate"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/buttonExchangeRate" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

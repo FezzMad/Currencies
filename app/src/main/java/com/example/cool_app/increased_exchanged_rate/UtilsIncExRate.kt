@@ -26,7 +26,7 @@ internal fun loadListOfIncCurrencies(context: Context): String? {
 }
 
 // Сохранение полученных данных
-internal fun saveValues(date: String, result: String, incCurrencies: String, context: Context) {
+internal fun saveIncExRateValues(date: String, result: String, incCurrencies: String, context: Context) {
     val myEditor: SharedPreferences.Editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
     myEditor.putString("DATE", date)
     myEditor.putString("RESULT", result)

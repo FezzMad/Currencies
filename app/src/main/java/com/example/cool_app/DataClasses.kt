@@ -48,8 +48,14 @@ internal data class IncreasedCurrencies(
     var percentageIncrease: Double? = null //  процент повышения цены
 )
 
-internal data class Result(
+internal data class IncExRateResult(
     val date: String?,
     val result: String,
     val list: MutableList<String>,
-    val incCurrencies: String)
+    val incCurrencies: String,
+    var numbOfMoreTwoPerc: Int = 0)
+
+internal data class ExRateResult(
+    val list: MutableList<String>,
+    val listSave: String
+)
