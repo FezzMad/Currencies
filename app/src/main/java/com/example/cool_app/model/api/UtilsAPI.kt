@@ -1,18 +1,30 @@
-package com.example.cool_app
+package com.example.cool_app.model.api
 
+import com.example.cool_app.dateToday
+import com.example.cool_app.model.entities.*
+import com.example.cool_app.model.entities.Currency
+import com.example.cool_app.model.entities.FullCurrency
+import com.example.cool_app.model.entities.DateAPI
+import com.example.cool_app.model.entities.CurrenciesResult
+import com.example.cool_app.model.entities.FullAnswer
+import com.example.cool_app.model.entities.IncCurrenciesProp
+import com.example.cool_app.roundDouble
+import com.example.cool_app.stringToDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.io.FileNotFoundException
-import java.net.URL
 import java.util.*
+
 
 /******************************************************************************
  *                              API FUNCTIONS                                 *
  ******************************************************************************/
 
-// Парсинг xml-файла
-internal suspend fun parseCBPAPI(xmlString: String): CBAPI {
+
+
+// Парсинг xml-файла в объект FullAnswer
+internal fun parseXmlFromAPI(xmlString: String): FullAnswer {
     val length = xmlString.length
     var counter = 0
     var str = ""
@@ -38,12 +50,11 @@ internal suspend fun parseCBPAPI(xmlString: String): CBAPI {
         }
 
     }
-    val cbapi = CBAPI()
+    val cbapi = FullAnswer()
     val dataInd = xmlString.indexOf("Date")
-    println(xmlString.substring(dataInd + 6, dataInd + 16))
     cbapi.valCurs?.date = xmlString.substring(dataInd + 6, dataInd + 16)
     mutListOfValute.forEach {
-        val valute = Valute()
+        val valute = FullCurrency()
         valute.charCode =
             it.substring(it.indexOf("<CharCode>") + "<CharCode>".length, it.indexOf("</CharCode>"))
         valute.numCode =
@@ -54,18 +65,20 @@ internal suspend fun parseCBPAPI(xmlString: String): CBAPI {
         valute.value =
             it.substring(it.indexOf("<Value>") + "<Value>".length, it.indexOf("</Value>"))
         valute.id = it.substring(it.indexOf("ID=\"") + "ID=\"".length, it.indexOf("\">"))
-        cbapi.valCurs?.currency?.add(valute)
-
+        cbapi.valCurs?.fullCurrencies?.add(valute)
     }
     return cbapi
 }
 
-// Перебор валют, возвращает данные о валютах, которые повысились в цене
-internal suspend fun getIncreasedCurrencies(
-    exchangeRateBefore: CBAPI,
-    exchangeRateAfter: CBAPI
-): IncreasedCurrenciesProperties = withContext(Dispatchers.Default) {
-    val increasedCurrenciesList: MutableList<IncreasedCurrencies> =
+// Возвращает список валют, которые повысились в цене
+//  средний процент роста,
+//  индексы в списке валют наименьшего и наибольшего роста
+internal suspend fun getIncCurrenciesProp(
+    currenciesBefore: FullAnswer,
+    currenciesAfter: FullAnswer
+): IncCurrenciesProp = withContext(Dispatchers.Default) {
+
+    val incCurrencyList: MutableList<IncCurrency> =
         mutableListOf() // Лист возросших валют
     var index = -1  // Индекс валюты в листе
     var indexMax = 0  // Индекс валюты с максимальным приростом
@@ -73,11 +86,12 @@ internal suspend fun getIncreasedCurrencies(
     var maxIncrease = 0.0  // Максимальное значение прироста в %
     var minIncrease = 101.0  // Минимальное значение прироста в %
     var amount = 0.0  // Сумма всех процентных приростов
-    for (valute in exchangeRateBefore.valCurs?.currency ?: mutableListOf()) {
+
+    for (valute in currenciesBefore.valCurs?.fullCurrencies ?: mutableListOf()) {
         val valueToDay =
             valute.value?.replace(",", ".")?.toDouble() ?: 0.0 // Курс валюты на сегодня
         val valueLastMonth =
-            exchangeRateAfter.valCurs?.currency?.find { it.charCode == valute.charCode }?.value?.replace(
+            currenciesAfter.valCurs?.fullCurrencies?.find { it.charCode == valute.charCode }?.value?.replace(
                 ",",
                 "."
             )
@@ -88,11 +102,11 @@ internal suspend fun getIncreasedCurrencies(
             val onePercent = valueLastMonth / 100.0  // 1% от курса валюты за прошлый месяц
             val percent = (onePercent * difference).roundDouble(3)  //  Процент роста валюты
             //** Заполнение информации о валюте */
-            val increasedCurrencies = IncreasedCurrencies()
+            val increasedCurrencies = IncCurrency()
             increasedCurrencies.charCode = valute.charCode
             increasedCurrencies.name = valute.name
-            increasedCurrencies.percentageIncrease = percent
-            increasedCurrenciesList.add(increasedCurrencies)
+            increasedCurrencies.percentageInc = percent
+            incCurrencyList.add(increasedCurrencies)
             amount += percent
             //** Определение валюты с максимальным приростом */
             if (percent > maxIncrease) {
@@ -106,115 +120,77 @@ internal suspend fun getIncreasedCurrencies(
             }
         }
     }
-    return@withContext if (increasedCurrenciesList.isNotEmpty()) {
+    return@withContext if (incCurrencyList.isNotEmpty()) {
         val averagePercent =
             (amount / (index + 1)).roundDouble(3)  // Подсчёт среднего процента повышения стоимости
-        IncreasedCurrenciesProperties(increasedCurrenciesList, averagePercent, indexMax, indexMin)
-    } else IncreasedCurrenciesProperties()
+        IncCurrenciesProp(incCurrencyList, averagePercent, indexMax, indexMin)
+    } else IncCurrenciesProp()
 }
 
 // Получение информации о курсе валют с Центрального банка на указанную дату
 // (на сегодня, если дата не указана)
-internal suspend fun getCenterBankExchangeRate(
+internal suspend fun getCurrenciesInfo(
     day: Int? = null,
     month: Int? = null,
     year: Int? = null
-): CBAPI = withContext(Dispatchers.IO) {
+): FullAnswer = withContext(Dispatchers.IO) {
     val date = if (day != null && month != null && year != 0) {
         val dayStr = if (day.toString().length == 1) "0$day" else day.toString()
         val monthStr = if (month.toString().length == 1) "0$month" else month.toString()
-        "?date_req=$dayStr/$monthStr/$year"
+        "$dayStr/$monthStr/$year"
     } else ""
-    var exchangeRate = CBAPI()
+    var exchangeRate = FullAnswer()
     try {
-        val xmlString = URL("https://www.cbr.ru/scripts/XML_daily_eng.asp$date").readText()
-        exchangeRate = parseCBPAPI(xmlString)
+        val response = cbapi().getRuData(date).execute()
+        val xmlString = response.body()!!.string()
+        exchangeRate = parseXmlFromAPI(xmlString)
     } catch (e: FileNotFoundException) {
         //** Ошибка */
     }
     exchangeRate
 }
 
-//подготовка информации о Increased currencies для вывода на экран
-internal suspend fun buildResult(
-    increasedCurrenciesProperties: IncreasedCurrenciesProperties,
-    dateAPI: DateAPI,
-    exchangeRateToDay: CBAPI,
-    number: Double
-): IncExRateResult = withContext(Dispatchers.Default) {
-    val dateSaved: String?
-    val result: String?
-    var incCurrencies: String?
-    var counter: Int = 0
-    val list: MutableList<String> = mutableListOf()
-    return@withContext if (increasedCurrenciesProperties.increasedCurrenciesList.isNotEmpty()) {
-        val maxValue =
-            increasedCurrenciesProperties.increasedCurrenciesList[increasedCurrenciesProperties.indexMax]
-        val minValue =
-            increasedCurrenciesProperties.increasedCurrenciesList[increasedCurrenciesProperties.indexMin]
-        dateSaved = exchangeRateToDay.valCurs?.date
-        result =
-            "Average percent +${increasedCurrenciesProperties.averagePercent}\n" +
-                    "${maxValue.name} +${maxValue.percentageIncrease} (${maxValue.charCode})\n" +
-                    "${minValue.name} +${minValue.percentageIncrease} (${minValue.charCode})"
-        incCurrencies = ""
-        increasedCurrenciesProperties.increasedCurrenciesList.forEach {
-            incCurrencies += "${it.name} +${it.percentageIncrease} (${it.charCode})\n"
-            list.add("${it.name} +${it.percentageIncrease} (${it.charCode})")
-        }
-        increasedCurrenciesProperties.increasedCurrenciesList.forEach {
-            if (it.percentageIncrease ?: 0.0 > number) counter++
-        }
-        IncExRateResult(dateSaved, result, list, incCurrencies, counter)
-    } else {
-        dateSaved =
-            "${dateAPI.day}.${dateAPI.month}.${dateAPI.year}"
-        result = "Нет валют, которые бы повысились в цене"
-        incCurrencies = ""
-        IncExRateResult(dateSaved, result, list, incCurrencies)
-    }
-}
-
 //Получение информации о Increased currencies
-internal suspend fun getIncExRate(number: Double = 2.0): IncExRateResult = withContext(Dispatchers.IO) {
-    val exchangeRateToDay = async { getCenterBankExchangeRate() }
+internal suspend fun getIncExRate(trackPercent: Double = 2.0): IncCurrenciesProp = withContext(Dispatchers.IO) {
+    val exchangeRateToDay = async { getCurrenciesInfo() }
     val dateAPI = async { getDateLastMonth(exchangeRateToDay.await()) }
     val exchangeRateLastMonth = async {
-        getCenterBankExchangeRate(
+        getCurrenciesInfo(
             dateAPI.await().day,
             dateAPI.await().month,
             dateAPI.await().year
         )
     }
     val increasedCurrenciesProperties = async {
-        getIncreasedCurrencies(
+        getIncCurrenciesProp(
             exchangeRateToDay.await(),
             exchangeRateLastMonth.await()
         )
     }
-    val resultObj = async {
-        buildResult(
-            increasedCurrenciesProperties.await(),
-            dateAPI.await(),
-            exchangeRateToDay.await(),
-            number
-        )
-    }
-    return@withContext resultObj.await()
+    return@withContext increasedCurrenciesProperties.await()
 }
 
 //Получение информации о курсе валют
-internal suspend fun getExRate(): ExRateResult = withContext(Dispatchers.IO) {
-    val list: MutableList<String> = mutableListOf()
-    getCenterBankExchangeRate().valCurs?.currency?.forEach { list.add("${it.name} ${it.value} ${it.charCode}") }
-    //date = stringToDate(getCenterBankExchangeRate().valCurs?.date ?: dateToday().toString())
+internal suspend fun getExRate(): CurrenciesResult = withContext(Dispatchers.IO) {
+    val stringExRate: MutableList<String> = mutableListOf()
+    val exRate: MutableList<Currency> = mutableListOf()
+    val fullCurrencies = getCurrenciesInfo().valCurs?.fullCurrencies
+    fullCurrencies?.forEach { stringExRate.add("${it.name} ${it.value} ${it.charCode}") }
+    for (fullCurrency in fullCurrencies ?: mutableListOf()) {
+        val currency = Currency()
+        currency.charCode = fullCurrency.charCode
+        currency.name = fullCurrency.name
+        currency.value = fullCurrency.value?.replace(",", ".")?.toDouble()
+        exRate.add(currency)
+    }
     var listSave = ""
-    list.forEach { listSave += "$it\n" }
-    return@withContext ExRateResult(list,listSave)
+    stringExRate.forEach { listSave += "$it\n" }
+
+    return@withContext CurrenciesResult(stringExRate,exRate,listSave)
 }
 
 //Получение даты на месяц назад
-internal suspend fun getDateLastMonth(exchangeRate: CBAPI): DateAPI =
+internal suspend fun getDateLastMonth(exchangeRate: FullAnswer): DateAPI =
     withContext(Dispatchers.Default) {
         val dateFromAPI = exchangeRate.valCurs?.date
         val date = if (dateFromAPI != null) stringToDate(dateFromAPI)

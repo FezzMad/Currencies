@@ -5,11 +5,16 @@
       <map>
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22777777777777777" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/currency_item.xml" value="0.23324275362318841" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_currencies.xml" value="0.17708333333333334" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_exchange_rate.xml" value="0.264" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_inc_currencies.xml" value="0.264" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_increased_exchange_rate.xml" value="0.264" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_login.xml" value="0.223731884057971" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_login_page.xml" value="0.223731884057971" />
-        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_settings.xml" value="0.21422101449275363" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/fragment_settings.xml" value="0.264" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/inc_ex_rate_item.xml" value="0.264" />
+        <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/item_inc_currency.xml" value="0.17708333333333334" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/list_item.xml" value="0.4" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/layout/login_page.xml" value="0.264" />
         <entry key="..\:/Users/mda20/AndroidStudioProjects/Cool_app/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22777777777777777" />

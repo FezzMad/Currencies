@@ -1,11 +1,11 @@
-package com.example.cool_app
+package com.example.cool_app.controller.fragments
 
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.cool_app.R
 import kotlinx.android.synthetic.main.fragment_login_page.*
 
 class FragmentLoginPage : Fragment(R.layout.fragment_login_page) {
@@ -24,7 +24,7 @@ class FragmentLoginPage : Fragment(R.layout.fragment_login_page) {
 
         if (isLogin) {
             // пользователь уже авторизирован
-            findNavController().navigate(R.id.action_fragmentLoginPage_to_fragmentIncreasedExchangeRate)
+            findNavController().navigate(R.id.action_fragmentLoginPage_to_fragmentIncCurrencies)
         } else {
             // пользователь ещё авторизирован
             buttonLogin.setOnClickListener {
@@ -34,7 +34,7 @@ class FragmentLoginPage : Fragment(R.layout.fragment_login_page) {
                     isLogin = true
                     myEditor.putBoolean("ISLOGIN", isLogin)
                     myEditor.apply()
-                    findNavController().navigate(R.id.action_fragmentLoginPage_to_fragmentIncreasedExchangeRate)
+                    findNavController().navigate(R.id.action_fragmentLoginPage_to_fragmentIncCurrencies)
                 }
             }
         }

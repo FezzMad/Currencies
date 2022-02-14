@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".increased_exchanged_rate.FragmentIncreasedExchangeRate">
+    tools:context=".controller.fragments.FragmentIncCurrencies">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             android:id="@+id/dateView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,10 +31,10 @@
 
         <ScrollView
             android:id="@+id/scrollView1"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:fillViewport="true"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@+id/buttonExchangeRate"
@@ -44,10 +44,12 @@
             app:layout_constraintVertical_bias="0.0"
             tools:ignore="MissingConstraints">
 
-            <ListView
-                android:id="@+id/currenciesList"
-                android:layout_width="wrap_content"
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
         </ScrollView>
 
         <Button
@@ -58,18 +60,7 @@
             android:text="Exchange rate"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/buttonSettings" />
-
-        <Button
-            android:id="@+id/buttonSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Settings"
-            app:layout_constraintEnd_toStartOf="@+id/buttonExchangeRate"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/buttonExchangeRate" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

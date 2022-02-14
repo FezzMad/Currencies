@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".exchange_rate.FragmentExchangeRate">
+    tools:context=".controller.fragments.FragmentCurrencies">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -12,24 +12,22 @@
 
         <ScrollView
             android:id="@+id/scrollView1"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:fillViewport="true"
             android:scrollbars="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints">
 
-            <ListView
-                android:id="@+id/exchangeRateList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-            </ListView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCurrencies"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

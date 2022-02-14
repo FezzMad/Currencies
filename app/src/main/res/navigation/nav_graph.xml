@@ -7,39 +7,29 @@
 
     <fragment
         android:id="@+id/fragmentLoginPage"
-        android:name="com.example.cool_app.FragmentLoginPage"
+        android:name="com.example.cool_app.controller.fragments.FragmentLoginPage"
         android:label="fragment_login_page"
         tools:layout="@layout/fragment_login_page" >
         <action
-            android:id="@+id/action_fragmentLoginPage_to_fragmentIncreasedExchangeRate"
+            android:id="@+id/action_fragmentLoginPage_to_fragmentIncCurrencies"
             app:destination="@id/fragmentIncreasedExchangeRate"
             app:popUpTo="@id/fragmentLoginPage"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/fragmentIncreasedExchangeRate"
-        android:name="com.example.cool_app.increased_exchanged_rate.FragmentIncreasedExchangeRate"
+        android:name="com.example.cool_app.controller.fragments.FragmentIncCurrencies"
         android:label="fragment_increased_exchange_rate"
-        tools:layout="@layout/fragment_increased_exchange_rate" >
+        tools:layout="@layout/fragment_inc_currencies" >
         <action
-            android:id="@+id/action_fragmentIncreasedExchangeRate_to_fragmentExchangeRate"
+            android:id="@+id/action_fragmentIncCurrencies_to_fragmentCurrencies"
             app:destination="@id/fragmentExchangeRate"
             app:popUpTo="@id/fragmentIncreasedExchangeRate"
-            app:popUpToInclusive="false" />
-        <action
-            android:id="@+id/action_fragmentIncreasedExchangeRate_to_fragmentSettings"
-            app:destination="@id/fragmentSettings"
-            app:popUpTo="@id/fragmentExchangeRate"
             app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/fragmentExchangeRate"
-        android:name="com.example.cool_app.exchange_rate.FragmentExchangeRate"
+        android:name="com.example.cool_app.controller.fragments.FragmentCurrencies"
         android:label="fragment_exchange_rate"
-        tools:layout="@layout/fragment_exchange_rate" />
-    <fragment
-        android:id="@+id/fragmentSettings"
-        android:name="com.example.cool_app.FragmentSettings"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_currencies" />
 </navigation>
